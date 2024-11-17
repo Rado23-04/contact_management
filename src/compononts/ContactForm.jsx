@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { Form } from 'react-bootstrap';
+import { v4 as uuidv4 } from 'uuid';
+
 export default function ContactForm() {
     const [firstname, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [number, setNumber] = useState("");
 
     const [allContact, setAllContact] = useState([
-        {firstname:"Rabe", lastName:"aaa",number:"0333333"},
-        {firstname:"Rakot", lastName:"bbb",number:"034444"}
+        {id: uuidv4(),firstname:"Rabe", lastName:"aaa",number:"0333333"},
+        {id: uuidv4(),firstname:"Rakot", lastName:"bbb",number:"034444"}
     ]);
 
     const handleSubmit = (event) =>{
@@ -29,6 +31,16 @@ export default function ContactForm() {
     const handleChangeNumber = (event) => {
         setNumber(event.target.value);
     }
+
+    const handledDelete = (id) =>{
+        const copyAllContact = allContact.slice();
+        const filterContact = copyAllContact.filter(contact => contact.id!== id);
+        setAllContact(filterContact);
+        /**
+         * const filteredContacts = allContact.filter(contact => contact.id !== id);
+        setAllContact(filteredContacts);
+         */
+    }
     
 
     return (
@@ -41,7 +53,7 @@ export default function ContactForm() {
               <Form.Control type="text" placeholder="FirstName" value={firstname} onChange={handleChangeFirstName}/>
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Control type="text" placeholder="LastName" value={lastName} onChange={handleChangeLastName}/>
+              <Form.Control type="text" placeholder="LastName" value={lastName} onChange={handleChangeLastName}/> 
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Control type="text" placeholder="Number Phone" value={number} onChange={handleChangeNumber}/>
@@ -60,10 +72,10 @@ export default function ContactForm() {
   </thead>
   <tbody>
     {allContact.map((contact) => (
-      <tr> 
-        <td>{contact.firstname}</td>
+      <tr key={contact.id}> 
+        <td >{contact.firstname} </td> 
         <td>{contact.lastName}</td>
-        <td>{contact.number}</td>
+        <td>{contact.number} <button onClick={() => handledDelete(contact.id)}>Delete</button></td>
       </tr>
     ))}
   </tbody>
